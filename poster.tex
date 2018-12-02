@@ -1,0 +1,218 @@
+% Gemini theme
+% https://github.com/anishathalye/gemini
+
+\documentclass[final]{beamer}
+
+% ====================
+% Packages
+% ====================
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[orientation=landscape,size=a0,scale=1.3]{beamerposter}
+\usetheme{gemini}
+\usecolortheme{labsix}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[american]{babel}
+\usepackage{amsmath, amssymb, amsthm, bbm, mathtools}
+
+\usetikzlibrary{arrows, automata, positioning, arrows.meta}
+\newtheorem{defn}{Definition}
+
+% Notations
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Exp}{\mathbb{E}}
+
+% ====================
+% Lengths
+% ====================
+
+% If you have N columns, choose \sepwidth and \colwidth such that
+% (N+1)*\sepwidth + N*\colwidth = \paperwidth
+\newlength{\sepwidth}
+\newlength{\colwidth}
+\setlength{\sepwidth}{0.025\paperwidth}
+\setlength{\colwidth}{0.3\paperwidth}
+
+\newcommand{\separatorcolumn}{\begin{column}{\sepwidth}\end{column}}
+
+% ====================
+% Title
+% ====================
+
+\title{Reward-adjusted diameters of a Markov decision process and their conditioning by potential-based reward shaping}
+
+\author{Falcon Z. Dai \hspace{4.5em} \url{dai@ttic.edu} \\ 
+Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
+
+\institute[TTI-Chicago]{Toyota Technological Institute at Chicago}
+
+% ====================
+% Body
+% ====================
+
+\begin{document}
+
+\begin{frame}[t]
+
+\begin{columns}[t]
+\separatorcolumn
+
+\begin{column}{\colwidth}
+
+  \begin{block}{Motivation}
+  Markov decision processes (MDPs) model a large class of problems in sequential decision making and in reinforcement learning (RL), we want to find a good policy in an \textit{unknown} MDP. Suppose we have some domain knowledge regarding the MDP, but this knowledge may not be accurate.
+    \begin{itemize}
+        \item Can we guide an RL agent without \textit{misguiding} it when our domain knowledge is inaccurate? \textbf{Yes}, potential-based reward shaping \cite{ng1999policy}.
+        \item Potential-based reward shaping works in practice but how does it work \textit{in theory}? Its effect on exploration was \textbf{not} well understood.
+        \item More generally, what structure in a reward function (and transition function) of an MDP makes it easy or hard to learn quickly? Maybe potential-based reward shaping can modify this? 
+    \end{itemize}
+  \end{block}
+
+  \begin{alertblock}{Highlights}
+    \begin{itemize}
+      \item We propose \textbf{novel structural parameters of MDPs}. \textit{Reward-adjusted diameter} $D_0^\#$ and \textit{reward-adjusted one-way diameter} $D_1^\#$ refine parameters and thus total regret bounds in previous works \cite{jaksch2010near,bartlett2009regal}. 
+      \item \textit{Reward-adjusted one-way diameter} $D_1^\#$ can be seen as formalizing an intuitive notion of \textbf{the informativeness of rewards}.
+      \item Potential-based reward shaping \textbf{can change} reward-adjusted diameters and thus the upper bound and lower bound.
+      
+    \end{itemize}
+
+  \end{alertblock}
+
+  \begin{block}{Preliminaries}
+    
+    \heading{Finite MDP}
+    A \textit{Markov decision process} is defined by the tuple $M = (S, A, p, r)$, where $S$ is the state space, $A$ is the action space, $p$ is the transition probability $p : S\times A \rightarrow \mathcal{P}(S)$, $r$ is the reward function $r : S \times A \times S \rightarrow \mathcal{P}([0, 1])$ with mean $\bar{r} : S \times A \times S \rightarrow [0, 1]$. Finite MDP with $|A|, |S| \leq \infty$. An MDP models a sequential decision making problem where actions can determine transitions.
+  
+    \heading{Average reward (gain) criterion}
+    The \textit{accumulated reward} of algorithm $\mathfrak{A}$ after $T$ time steps in MDP $M$ starting in state $s$ is a random variable 
+    $$ R(M, \mathfrak{A}, s, T) \coloneqq \sum_{t=1}^T r_t. $$
+  
+    Furthermore, we define the \textit{average reward} or \textit{gain} as 
+    \begin{equation*}
+      \rho(M, \mathfrak{A}, s) \coloneqq \lim_{T \rightarrow \infty} \Exp \left[ \frac{1}{T} R(M, \mathfrak{A}, s, T) \right].
+    \end{equation*}
+    
+    This can be maximized by some \textit{stationary} policy and we define the \textit{optimal average reward} of $M$, which is \textit{independent} of initial state, as 
+    $$ \rho^*(M) \coloneqq \max_{\pi : S \rightarrow A} \rho(M, \pi, s). $$
+    
+  \end{block}
+
+\end{column}
+
+\separatorcolumn
+
+\begin{column}{\colwidth}
+
+  \heading{Total regret}
+  We will compete with the expected accumulative reward of an optimal stationary policy \textit{on its trajectory}, and define the \textit{total regret} of an learning algorithm $\mathfrak{A}$ starting in state $s$ after $T$ time steps as
+  $$ \Delta(M, \mathfrak{A}, s, T) \coloneqq T \rho^*(M) - R(M, \mathfrak{A}, s, T). $$
+ 
+  \heading{Diameters}
+  We can extend a natural measure of the ``size'' of a Markov chain as the maximum of expected hitting times between any pair of states to MDP.
+  
+  Suppose in the stochastic process induced by following policy $\pi$ in MDP $M$ starting at state $s$, $T(s'|M, \pi, s)$ is the first time step of reaching $s'$. We define the \emph{diameter} of $M$ \cite{jaksch2010near} to be
+  $$ D_0(M) \coloneqq \max_{s, s' \in S} \min_{\pi: S \rightarrow A} \Exp \left[ T(s'|M, \pi, s) \right]. $$
+  Furthermore, if we only care about reaching the ``good'' states as measured by $h(s)$, the bias of state $s$. We define the \emph{one-way diameter} of $M$ \cite{bartlett2009regal} to be
+  $$ D_1(M) \coloneqq \max_{\substack{s \in S \\ s^* \in \argmax_{s'} h(s')}} \min_{\pi: S \rightarrow A} \Exp \left[ T(s^*|M, \pi, s) \right]. $$
+  
+  \heading{Potential-based reward shaping}
+  Given an arbitrary function $\phi: S \rightarrow \mathbb{R}$ called a \textit{potential}, we can define a new MDP $M_\phi = (S, A, p, r_\phi)$ with a \textit{potential-shaped} reward function $r_\phi$ that adds $\phi(s') - \phi(s)$ to any reward drawn from distribution $r(s, a, s')$. As a result, the mean of the reward is shifted by the same amount
+  \begin{equation*}
+    \bar{r}_\phi(s, a, s') = \bar{r}(s, a, s') + \phi(s') - \phi(s).
+  \end{equation*}
+
+  \begin{block}{Reward-adjusted diameters}
+    Instead of how ``long,'' we ask how ``costly'' it is go from one state to another. This allows us to account for the typical rewards collected.
+    
+    \heading{Reward-adjusted diameter}
+    We define the \emph{reward-adjusted diameter} of $M$ to be
+    $$ D_0^\#(M) \coloneqq \max_{s, s' \in S} \min_{\pi: S \rightarrow A} \Exp \left[ \sum_{t=1}^{T(s'|M, \pi, s)} 1 - r_t \right]. $$
+
+    This replaces diameter and provides a tighter upper bound on the total regret of algorithm \texttt{UCRL2} proposed in \cite{jaksch2010near}, ignoring logarithmic factors, $\tilde{O}(D_0^\#|S|\sqrt{|A|\,T})$. 
+
+  \end{block}
+
+  \heading{Reward-adjusted one-way diameter}
+  Furthermore, suppose that $h(s)$ is the bias of state $s$ and $\rho^*(M)$ is the optimal average reward, we define the \emph{reward-adjusted one-way diameter} of $M$ to be
+
+  $$ D_1^\#(M) \coloneqq \max_{\substack{s \in S \\ s^* \in \argmax_{s'} h(s')}} \min_{\pi: S \rightarrow A} \Exp \left[ \sum_{t=1}^{T(s^*|M, \pi, s)} \rho^*(M) - r_t \right]. $$
+  
+  This replaces the one-way diameter in the lower bound from \cite{bartlett2009regal} and 
+
+\end{column}
+
+\separatorcolumn
+
+\begin{column}{\colwidth}
+  % TODO a bit ugly way to continue a column...
+
+  total regret of any learning algorithm becomes $\Omega(D_1^\#\sqrt{|S|\,|A|\,T})$ meaning that there exists an MDP with the specified parameters $|S|, |A|, D_1^\#$ realizing such total regret. The notion of reward-adjusted one-way diameter $D_1^\#$ can be interpreted informally as the misalignment of short-term reward with long-term reward with greater misalignment corresponding to a greater $D_1^\#$. 
+
+  \begin{block}{Example}
+    
+    \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[->, >=stealth', shorten >=1pt, auto, semithick, scale=1]
+      \tikzstyle{action} = [draw=black,fill=none]
+        % Draw the states
+        \node[state] at (-6, 1) (s1) {$s_1$};
+        \node[state] at (6, -1) (s2) {$s_2$};
+        
+        % Draw the actions
+        \node[action, left=of s1] (s1a1) {$a_1$};
+        \node[action, above right=of s1] (s1a2) {$a_2$};
+        
+        \node[action, right=of s2] (s2a1) {$a_1$};
+        \node[action, below left=of s2] (s2a2) {$a_2$};
+ 
+        % Connect the states with arrows
+        \path (s1a2) edge [bend left] node {$\epsilon, 1-\alpha$} (s2)
+                     edge [bend left] node {$1-\epsilon, 1-\alpha$} (s1);
+        \path (s2a2) edge [bend left] node {$\epsilon, 1$} (s1)
+                     edge [bend left] node {$1-\epsilon, 1$} (s2);
+        \path (s1a1) edge [bend left] node {$1, 1-\alpha$} (s1);
+        \path (s2a1) edge [bend left] node {$1, 1$} (s2);
+        
+        % State ---> action
+        \path (s1) edge [dashed] (s1a1);
+        \path (s1) edge [dashed] (s1a2);
+        \path (s2) edge [dashed] (s2a1);
+        \path (s2) edge [dashed] (s2a2);
+    \end{tikzpicture}
+    \caption{$S = \{s_1, s_2\}$, $A = \{a_1, a_2\}$, and $\epsilon, \alpha \in (0, 1)$. The solid edges are labeled by the transition probabilities and rewards. All actions taken at state $s_1$ have a reward of $1-\alpha$ and all actions taken at state $s_2$ have a reward of $1$. $a_1$ is the ``stay'' action and $a_2$, the ``sometimes switch'' action.}
+  \end{figure}
+  
+  Obviously it is best to go to $s_2$ and then stay. However, taking $a_2$ at state $s_1$ usually looks as bad as taking $a_1$. Consider shaping $M$ by potential $\phi(s_1) = 0$ and $\phi(s_2) = \alpha$ to encourage transition $s_1 \rightarrow s_2$ and to discourage transition $s_2 \rightarrow s_1$ simultaneously. We can confirm in this example 
+  $$ D_0^\#(M_\phi) = \max \left\{ -\alpha + \frac{\alpha}{\epsilon}, \, \alpha + 0 \right\} = \max \left\{ \left(\frac{1}{\epsilon} - 1\right) \alpha, \, \alpha \right\} < \frac{\alpha}{\epsilon} = D_0^\#(M). $$
+
+  \end{block}
+
+  \begin{block}{Open questions (collaboration?)}
+  \begin{itemize}
+      \item What are the best and the worst potentials? How much can reward-adjusted diameters change? 
+      \item Where do we find helpful potentials? Are there good ways to construct them from verbal instructions or demonstrations?
+    %   \item Many different reward functions can motivate the same near-optimal behaviors (off by an arbitrary potential). What does an inverse reinforcement learning (IRL) algorithm prefer?
+  \end{itemize}
+  \end{block}
+
+  \begin{block}{References}
+
+    \nocite{*}
+    \footnotesize{\bibliographystyle{alpha}\bibliography{references}}
+
+  \end{block}
+
+\end{column}
+
+\separatorcolumn
+\end{columns}
+
+\end{frame}
+
+\end{document}
