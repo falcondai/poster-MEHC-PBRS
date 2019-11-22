@@ -57,7 +57,7 @@
 \title{Maximum Expected Hitting Cost and Informativeness of Rewards}
 % \title{Reward-adjusted diameters of a Markov decision process and their conditioning by potential-based reward shaping}
 
-\author{Falcon Z. Dai \hspace{4.5em} \url{dai@ttic.edu} \\ 
+\author{Falcon Z. Dai \hspace{4.5em} \url{dai@ttic.edu} \\
 Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
 
 \institute[TTI-Chicago]{Toyota Technological Institute at Chicago}
@@ -86,28 +86,28 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
 
   \begin{alertblock}{Highlights}
     \begin{itemize}
-      \item We propose a complexity parameter of MDPs called \textit{maximum expected hitting cost} and show that it refines diameter and thus regret bounds in previous works. 
-      \item We show that potential-based reward shaping can change the MEHC of an MDP and thus the regret bound. This results in a set of MDPs equivalent with different learning difficulties as measured by regret. 
+      \item We propose a complexity parameter of MDPs called \textit{maximum expected hitting cost} and show that it refines diameter and thus regret bounds in previous works.
+      \item We show that potential-based reward shaping can change the MEHC of an MDP and thus the regret bound. This results in a set of MDPs equivalent with different learning difficulties as measured by regret.
       \item We show that MEHCs of rewards related by PBRS differ by a factor of at most two in a large class of MDPs.
     \end{itemize}
 
   \end{alertblock}
 
   \begin{block}{Preliminaries}
-    
+
     \heading{Finite MDP}
     A \textit{Markov decision process} is defined by the tuple $M = (\mathcal{S}, \mathcal{A}, p, r, r_\text{max})$, where $S$ is the state space, $A$ is the action space, $p$ is the transition probability $p : \mathcal{S}\times \mathcal{A} \rightarrow \mathcal{P}(\mathcal{S})$, $r$ is the reward function $r : \mathcal{S} \times \mathcal{A} \rightarrow \mathcal{P}([0, r_\text{max}])$ with mean rewards $\bar{r}(s, a) \coloneqq \Exp[r(s, a)]$. Together with an algorithm $\mathfrak{L}$, we get a stochastic process $(s_t, a_t, r_t)_{t \geq 0}$.
-  
+
     \heading{Average reward (gain) and regret}
     The \textit{accumulated reward} of algorithm $\mathfrak{L}$ after $T$ time steps in MDP $M$ starting in state $s$ is a random variable $R(M, \mathfrak{L}, s, T) \coloneqq \sum_{t=1}^T r_t$.
-  
+
     Furthermore, we define the \textit{average reward} or \textit{gain} as $\rho(M, \mathfrak{L}, s) \coloneqq \lim_{T \rightarrow \infty} \frac{1}{T} \Exp \left[ R(M, \mathfrak{L}, s, T) \right]$.
-    
+
     This can be maximized by some \textit{stationary} policy and we define the \textit{optimal average reward} of $M$, which we assume to be \textit{independent} of initial state, as $\rho^*(M) \coloneqq \max_{\pi : S \rightarrow A} \rho(M, \pi, s)$.
-    
+
     We will compete with the expected accumulative reward of an optimal stationary policy \textit{on its trajectory}, and define the \textit{regret} of an learning algorithm $\mathfrak{L}$ starting in state $s$ after $T$ time steps as
     $$ \Delta(M, \mathfrak{L}, s, T) \coloneqq T \rho^*(M) - R(M, \mathfrak{L}, s, T). $$
- 
+
   \end{block}
 
 \end{column}
@@ -119,20 +119,20 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
   \heading{Diameter and maximum expected hitting cost}
   Suppose in the stochastic process induced by following a policy $\pi$ in MDP $M$, the time to hit state $s'$ starting at state $s$ is $h_{s \rightarrow s'}(M, \pi)$. We define the \emph{diameter} of $M$ \cite{jaksch2010near} to be
   $$ D(M) \coloneqq \max_{s, s' \in \mathcal{S}} \min_{\pi : \mathcal{S} \rightarrow \mathcal{A}} \Exp \left[ h_{s \rightarrow s'}(M, \pi) \right]. $$
-  
+
   We define the \emph{maximum expected hitting cost} of $M$ to be
   $$ \kappa(M) \coloneqq \max_{s, s' \in \mathcal{S}} \min_{\pi : \mathcal{S} \rightarrow \mathcal{A}} \Exp \left[ \sum_{t=0}^{h_{s \rightarrow s'}(M, \pi) - 1} r_\text{max} - r_t \right]. $$
-  
+
   Observe that MEHC is a smaller parameter, that is, $\kappa(M) \leq r_\text{max} D(M)$, since for any $s, s', \pi$, we have $r_\text{max} - r_t \leq r_\text{max}$.
-  
+
   \heading{$\Pi$-equivalent rewards}
   These rewards assign the same average rewards to the same policies, i.e., $\rho(M_1, \pi, s) = \rho(M_2, \pi, s)$ where $M_1$ and $M_2$ differ only in their rewards.
-  
+
   \heading{Potential-based reward shaping}
   Given a potential $\varphi : \mathcal{S} \rightarrow \mathbb{R}$, define $r^\varphi_t \coloneqq r_t -\varphi(s_{t}) + \varphi(s_{t+1})$.
-    
+
   \heading{Extended MDP}
-  After visiting state-action $(s, a)$ for $N(s, a)$-many times, we can establish that a confidence interval for both its mean reward $\bar{r}(s, a)$ and its transition $p(\cdot|s, a)$. 
+  After visiting state-action $(s, a)$ for $N(s, a)$-many times, we can establish that a confidence interval for both its mean reward $\bar{r}(s, a)$ and its transition $p(\cdot|s, a)$.
 %   Let $b(\delta, n) > 0$ be the confidence bound, $\hat{r}(s, a)$ the empirical mean of $r(s, a)$, $\hat{p}(\cdot|s, a)$ the empirical transition of $p(\cdot|s, a)$, and the statistically plausible mean rewards are
   $$ B_\delta(s, a) \coloneqq \big\{r' \in \mathbb{R} : |r' - \hat{r}(s, a)| \leq r_\text{max} \, b(\delta, N(s, a)) \big\} \cap [0, r_\text{max}] $$
   %
@@ -143,9 +143,9 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
   We define an \emph{extended MDP} $M^+ \coloneqq (\mathcal{S}, \mathcal{A}^+, p^+, r^+)$, where the action space $\mathcal{A}^+$ is a union over state-specific actions
   $$ \mathcal{A}^+_s \coloneqq \{ (a, p', r') : a \in \mathcal{A}, p' \in C_\delta(s, a), r' \in B_\delta(s, a) \}. $$
   %
-  For transition and rewards, 
+  For transition and rewards,
   $$ p^+\big(\cdot|s, (a, p', r') \big) \coloneqq p'(\cdot) \qquad r^+\big(s, (a, p', r')\big) \coloneqq r'. $$
-    
+
   \begin{block}{Results}
   \heading{Lemma (MEHC upper bounds the span of values, ''optimism'')}
   Assuming that the actual MDP $M$ is in the extended MDP $M^+$, i.e., $\bar{r}(s, a) \in B_\delta(s, a)$ and $p(\cdot|s, a) \in C_\delta(s, a)$ for all $s \in \mathcal{S}, a \in \mathcal{A}$, we have
@@ -157,7 +157,7 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
   \heading{Theorem (MEHC under PBRS)}
   Given an MDP $M$ with finite maximum expected hitting cost $\kappa(M) < \infty$ and an unsaturated optimal average reward $\rho^*(M) < r_\text{max}$, the maximum expected hitting cost of any PBRS-parametrized MDP $M^\varphi$ is bounded by a multiplicative factor of two
   $$ \frac{1}{2} \kappa(M) \leq \kappa(M^\varphi) \leq 2 \kappa(M). $$
-  
+
   \end{block}
 \end{column}
 
@@ -165,7 +165,7 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
 
 \begin{column}{\colwidth}
   \begin{block}{Toy example}
-    
+
     \begin{figure}[h]
     \centering
     \begin{tikzpicture}[->, >=stealth', shorten >=1pt, auto, semithick, scale=1]
@@ -197,10 +197,10 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
     \end{tikzpicture}
     \caption{Circular nodes represent states and square nodes represent actions. The solid edges are labeled by the transition probabilities and the dashed edges are labeled by the mean rewards. Furthermore, $r_\text{max} = 1$. For concreteness, one can consider setting $\alpha = 0.11, \beta = 0.1, \epsilon = 0.05$. $a_1$ is the ``stay'' action and $a_2$, the ``sometimes switch'' action.}
   \end{figure}
-  
-  Obviously it is best to go to $s_2$ and then stay. However, taking $a_2$ at state $s_1$ usually looks as bad as taking $a_1$. We can differentiate the actions better by shaping with a potential of $\varphi(s_1) \coloneqq 0$ and $\varphi(s_2) \coloneqq \nicefrac{(\alpha - \beta)}{2 \epsilon}$. The shaped mean rewards become, 
+
+  Obviously it is best to go to $s_2$ and then stay. However, taking $a_2$ at state $s_1$ usually looks as bad as taking $a_1$. We can differentiate the actions better by shaping with a potential of $\varphi(s_1) \coloneqq 0$ and $\varphi(s_2) \coloneqq \nicefrac{(\alpha - \beta)}{2 \epsilon}$. The shaped mean rewards become,
   $$ \bar{r^\varphi}(s_1, a_2) = 1 - \alpha - \varphi(s_1) + \epsilon \varphi(s_2) + (1 - \epsilon) \varphi(s_1) = 1 - \nicefrac{(\alpha + \beta)}{2} > 1 - \alpha = \bar{r^\varphi}(s_1, a_1) $$
-  and 
+  and
   $$ \bar{r^\varphi}(s_2, a_2) = 1 - \beta - \varphi(s_2) + \epsilon \varphi(s_1) + (1 - \epsilon) \varphi(s_2) = 1 - \nicefrac{(\alpha + \beta)}{2} < 1 - \beta = \bar{r^\varphi}(s_2, a_1). $$
   The maximum expected hitting cost becomes smaller
   \begin{align*}
