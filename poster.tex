@@ -126,7 +126,7 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
   Observe that MEHC is a smaller parameter, that is, $\kappa(M) \leq r_\text{max} D(M)$, since for any $s, s', \pi$, we have $r_\text{max} - r_t \leq r_\text{max}$.
   
   \heading{$\Pi$-equivalent rewards}
-  These rewards assign the same average rewards to the same policies, i.e. $\rho(M_1, \pi, s) = \rho(M_2, \pi, s)$ where $M_1$ and $M_2$ differ only in their rewards.
+  These rewards assign the same average rewards to the same policies, i.e., $\rho(M_1, \pi, s) = \rho(M_2, \pi, s)$ where $M_1$ and $M_2$ differ only in their rewards.
   
   \heading{Potential-based reward shaping}
   Given a potential $\varphi : \mathcal{S} \rightarrow \mathbb{R}$, define $r^\varphi_t \coloneqq r_t -\varphi(s_{t}) + \varphi(s_{t+1})$.
@@ -147,8 +147,8 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
   $$ p^+\big(\cdot|s, (a, p', r') \big) \coloneqq p'(\cdot) \qquad r^+\big(s, (a, p', r')\big) \coloneqq r'. $$
     
   \begin{block}{Results}
-  \heading{Lemma (MEHC upper bounds the span of values)}
-  Assuming that the actual MDP $M$ is in the extended MDP $M^+$, i.e. $\bar{r}(s, a) \in B_\delta(s, a)$ and $p(\cdot|s, a) \in C_\delta(s, a)$ for all $s \in \mathcal{S}, a \in \mathcal{A}$, we have
+  \heading{Lemma (MEHC upper bounds the span of values, ''optimism'')}
+  Assuming that the actual MDP $M$ is in the extended MDP $M^+$, i.e., $\bar{r}(s, a) \in B_\delta(s, a)$ and $p(\cdot|s, a) \in C_\delta(s, a)$ for all $s \in \mathcal{S}, a \in \mathcal{A}$, we have
   $$ \max_s u_i(s) - \min_{s'} u_i(s') \leq \kappa(M) $$
   where $u_i(s)$ is the $i$-step optimal undiscounted value of state $s$.
 
@@ -212,7 +212,7 @@ Matthew R. Walter \hspace{2em} \url{mwalter@ttic.edu}}
 
   \begin{block}{Open questions}
   \begin{itemize}
-      \item Many different reward functions can motivate the same near-optimal behaviors. How can we find helpful potentials, for example in the context of inverse reinforcement learning (IRL)? Or to construct them from verbal instructions or demonstrations?
+      \item How can we find helpful potentials, when given available verbal instructions or demonstrations? Will PBRS be more impactful in a different setting? Under a different algorithm?
   \end{itemize}
   \end{block}
 
